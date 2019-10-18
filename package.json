@@ -1,0 +1,36 @@
+{
+  "name": "ash2doc",
+  "version": "0.1.0",
+  "description": "parse comments in an AGS Script Header file and turn into docs",
+  "main": "bin/index.js",
+  "bin": {
+    "ash2doc": "./bin/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ericoporto/ash2doc.git"
+  },
+  "keywords": [
+    "docfile",
+    "agsscript",
+    "ags",
+    "adventure",
+    "game",
+    "studio"
+  ],
+  "author": "eri0o",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ericoporto/ash2doc/issues"
+  },
+  "homepage": "https://github.com/ericoporto/ash2doc#readme",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "tree-sitter": "^0.15.8",
+    "tree-sitter-ags-script": "^0.1.3",
+    "yargs": "^14.2.0"
+  }
+}
