@@ -44,6 +44,20 @@ const hl = (() => {
 
 var f = "";
 
+function handleComment(cur, lastComment){
+  if(cur.nodeType == 'comment'){
+    lastComment = cur.nodeText;
+    if(lastComment.startsWith('///')){
+      const strlen = lastComment.length;
+      lastComment = lastComment.substr(3,strlen-3);
+    } else {
+      lastComment = "";
+    }
+  }
+
+  return lastComment;
+}
+
 function handleMethodDeclaration(cur, structName , lastComment){
   var func_text = "";
   var reportText = ""
@@ -93,16 +107,7 @@ function handleFieldDeclarationList(cur, structName){
       notEnd;
       notEnd = cur.gotoNextSibling()) {
 
-
-      if(cur.nodeType == 'comment'){
-        lastComment = cur.nodeText;
-        if(lastComment.startsWith('///')){
-          const strlen = lastComment.length;
-          lastComment = lastComment.substr(3,strlen-3);
-        } else {
-          lastComment = "";
-        }
-      }
+      lastComment = handleComment(cur, lastComment);
 
       if(cur.nodeType == 'field_function_declaration'){
 
@@ -154,15 +159,7 @@ for(var notEnd = cursor.gotoFirstChild();
     notEnd;
     notEnd = cursor.gotoNextSibling()) {
 
-    if(cursor.nodeType == 'comment'){
-      lastComment = cursor.nodeText;
-      if(lastComment.startsWith('///')){
-        const strlen = lastComment.length;
-        lastComment = lastComment.substr(3,strlen-3);
-      } else {
-        lastComment = "";
-      }
-    }
+    lastComment = handleComment(cursor, lastComment);
 
     if(cursor.nodeType == 'import_declaration'){
       var func_text = cursor.nodeText;
