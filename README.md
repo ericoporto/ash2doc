@@ -13,9 +13,10 @@ Commands:
   ash2doc mark  Extract .ash comments to Markdown
 
 Options:
-  --version   Show version number                                      [boolean]
-  -f, --file  Load a file                                             [required]
-  -h, --help  Show help                                                [boolean]
+  --version    Show version number                                     [boolean]
+  -f, --file   Load a file                                            [required]
+  -l, --level  Initial header level
+  -h, --help   Show help                                               [boolean]
 
 Examples:
   ash2doc mark -f foo.ash  Turns comments in the given .ash file to markdown
