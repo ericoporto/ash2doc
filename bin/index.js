@@ -44,6 +44,7 @@ const hl = (() => {
 
 var f = "";
 
+// comment is the content text when documenting methods, properties and functions
 function handleComment(cur, hl, lastComment){
   if(cur.nodeType == 'comment'){
     lastComment = cur.nodeText;
@@ -185,7 +186,7 @@ function handleScriptHeader(cur, hl){
 }
 
 // parse a sring as ash AGS Script Header file
-function parseStringAsASH(ashstring, hl){
+function parseStringAsASH(ashstring, hl, parser){
   const cursor = parser.parse(ashstring).walk();
 
   return reportText = handleScriptHeader(cursor, hl);
@@ -193,6 +194,6 @@ function parseStringAsASH(ashstring, hl){
 
 const file = fs.readFileSync(argv.file);
 
-var reportText = parseStringAsASH(file.toString(), hl);
+var reportText = parseStringAsASH(file.toString(), hl, parser);
 
 console.log(reportText);
