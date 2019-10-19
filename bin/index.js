@@ -157,7 +157,7 @@ function handleScriptHeader(cur){
       notEnd;
       notEnd = cur.gotoNextSibling()) {
 
-      lastComment = handleComment(cursor, lastComment);
+      lastComment = handleComment(cur, lastComment);
 
       if(cur.nodeType == 'import_declaration'){
         var func_text = cur.nodeText;
@@ -181,10 +181,15 @@ function handleScriptHeader(cur){
   return reportText;
 }
 
+// parse a sring as ash AGS Script Header file
+function parseStringAsASH(ashstring){
+  const cursor = parser.parse(ashstring).walk();
+
+  return reportText = handleScriptHeader(cursor);
+}
+
 const file = fs.readFileSync(argv.file);
 
-const cursor = parser.parse(file.toString()).walk();
-
-var reportText = handleScriptHeader(cursor);
+var reportText = parseStringAsASH(file.toString());
 
 console.log(reportText);
