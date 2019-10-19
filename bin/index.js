@@ -14,6 +14,9 @@ const argv = Yargs.scriptName("ash2doc")
     .alias('f', 'file')
     .nargs('f', 1)
     .describe('f', 'Load a file')
+    .alias('l', 'level')
+    .nargs('l', 1)
+    .describe('l', 'Initial header level')
     .demandOption(['f'])
     .help('h')
     .alias('h', 'help')
@@ -24,6 +27,20 @@ var fs = require('fs');
 var f = "";
 
 fs.readFile(argv.file,function (err, data) {
+  var hl = "###";
+
+  if(argv.level){
+    if(argv.level == '1'){
+      hl = "#"
+    }
+    if(argv.level == '2'){
+      hl = "##"
+    }
+    if(argv.level == '3'){
+      hl = "###"
+    }
+  }
+
   if(err) throw err;
   f = data.toString();
   const tree = parser.parse(f);
@@ -52,7 +69,7 @@ fs.readFile(argv.file,function (err, data) {
         func_text = func_text.replace('import', '');
         func_text = func_text.replace(';', '');
 
-        reportText = reportText + "\n\n## " + func_text +
+        reportText = reportText + "\n\n" + hl + " " + func_text +
         "\n" + lastComment;
 
         lastComment = "";
@@ -69,7 +86,7 @@ fs.readFile(argv.file,function (err, data) {
 
             if(c1.nodeType == 'type_identifier') {
                struct_name = c1.nodeText;
-               reportText = reportText + "\n\n# " + struct_name + "\n";
+               reportText = reportText + "\n\n" + hl + " " + struct_name + "\n";
             }
 
             if(c1.nodeType == 'field_declaration_list') {
@@ -126,7 +143,7 @@ fs.readFile(argv.file,function (err, data) {
 
                     }
 
-                    reportText = reportText + "\n\n## " +
+                    reportText = reportText + "\n\n" + hl + "# " +
                      func_text +
                     "\n" + lastComment;
 
