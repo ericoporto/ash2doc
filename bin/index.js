@@ -84,7 +84,7 @@ function handleMethodDeclaration(cur, structName , lastComment){
   return reportText;
 }
 
-
+// fields can be methods and properties
 function handleFieldDeclarationList(cur, structName){
   var reportText = "";
   var lastComment = "";
@@ -117,7 +117,7 @@ function handleFieldDeclarationList(cur, structName){
   return reportText;
 }
 
-
+// do parsing for the contents of a struct node
 function handleStructDeclaration(cur){
   var reportText = "";
   var struct_name = "";
