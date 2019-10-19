@@ -44,7 +44,7 @@ const hl = (() => {
 
 var f = "";
 
-function handleComment(cur, lastComment){
+function handleComment(cur, hl, lastComment){
   if(cur.nodeType == 'comment'){
     lastComment = cur.nodeText;
     if(lastComment.startsWith('///')){
@@ -59,7 +59,7 @@ function handleComment(cur, lastComment){
 }
 
 // it's a method from a struct, so we handle it
-function handleMethodDeclaration(cur, structName , lastComment){
+function handleMethodDeclaration(cur, hl, structName , lastComment){
   var func_text = "";
   var reportText = ""
 
@@ -100,7 +100,7 @@ function handleMethodDeclaration(cur, structName , lastComment){
 }
 
 // fields can be methods and properties
-function handleFieldDeclarationList(cur, structName){
+function handleFieldDeclarationList(cur, hl, structName){
   var reportText = "";
   var lastComment = "";
 
@@ -108,11 +108,12 @@ function handleFieldDeclarationList(cur, structName){
       notEnd;
       notEnd = cur.gotoNextSibling()) {
 
-      lastComment = handleComment(cur, lastComment);
+      lastComment = handleComment(cur, hl, lastComment);
 
       if(cur.nodeType == 'field_function_declaration'){
 
         reportText += handleMethodDeclaration(cur.currentNode.walk(),
+                                hl,
                                 structName,
                                 lastComment);
 
@@ -124,7 +125,7 @@ function handleFieldDeclarationList(cur, structName){
 }
 
 // do parsing for the contents of a struct node
-function handleStructDeclaration(cur){
+function handleStructDeclaration(cur, hl){
   var reportText = "";
   var struct_name = "";
 
@@ -140,6 +141,7 @@ function handleStructDeclaration(cur){
       if(cur.nodeType == 'field_declaration_list') {
 
         reportText +=  handleFieldDeclarationList(cur.currentNode.walk(),
+                                   hl,
                                    struct_name);
 
       }
@@ -149,7 +151,7 @@ function handleStructDeclaration(cur){
 }
 
 // traverse the script header for the interesting nodes
-function handleScriptHeader(cur){
+function handleScriptHeader(cur, hl){
   let lastComment = "";
   let reportText = "";
 
@@ -157,7 +159,7 @@ function handleScriptHeader(cur){
       notEnd;
       notEnd = cur.gotoNextSibling()) {
 
-      lastComment = handleComment(cur, lastComment);
+      lastComment = handleComment(cur, hl, lastComment);
 
       if(cur.nodeType == 'import_declaration'){
         var func_text = cur.nodeText;
@@ -172,7 +174,8 @@ function handleScriptHeader(cur){
 
       if(cur.nodeType == 'struct_declaration'){
 
-        reportText += handleStructDeclaration(cur.currentNode.walk());
+        reportText += handleStructDeclaration(cur.currentNode.walk(),
+                                              hl);
 
         lastComment = "";
       }
@@ -182,14 +185,14 @@ function handleScriptHeader(cur){
 }
 
 // parse a sring as ash AGS Script Header file
-function parseStringAsASH(ashstring){
+function parseStringAsASH(ashstring, hl){
   const cursor = parser.parse(ashstring).walk();
 
-  return reportText = handleScriptHeader(cursor);
+  return reportText = handleScriptHeader(cursor, hl);
 }
 
 const file = fs.readFileSync(argv.file);
 
-var reportText = parseStringAsASH(file.toString());
+var reportText = parseStringAsASH(file.toString(), hl);
 
 console.log(reportText);
