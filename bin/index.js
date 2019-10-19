@@ -58,6 +58,7 @@ function handleComment(cur, lastComment){
   return lastComment;
 }
 
+// it's a method from a struct, so we handle it
 function handleMethodDeclaration(cur, structName , lastComment){
   var func_text = "";
   var reportText = ""
@@ -147,37 +148,43 @@ function handleStructDeclaration(cur){
   return reportText;
 }
 
+// traverse the script header for the interesting nodes
+function handleScriptHeader(cur){
+  let lastComment = "";
+  let reportText = "";
+
+  for(var notEnd = cur.gotoFirstChild();
+      notEnd;
+      notEnd = cur.gotoNextSibling()) {
+
+      lastComment = handleComment(cursor, lastComment);
+
+      if(cur.nodeType == 'import_declaration'){
+        var func_text = cur.nodeText;
+        func_text = func_text.replace('import', '');
+        func_text = func_text.replace(';', '');
+
+        reportText = reportText + "\n\n" + hl + " " + func_text +
+        "\n" + lastComment;
+
+        lastComment = "";
+      }
+
+      if(cur.nodeType == 'struct_declaration'){
+
+        reportText += handleStructDeclaration(cur.currentNode.walk());
+
+        lastComment = "";
+      }
+  }
+
+  return reportText;
+}
 
 const file = fs.readFileSync(argv.file);
 
 const cursor = parser.parse(file.toString()).walk();
 
-let lastComment = "";
-let reportText = "";
-
-for(var notEnd = cursor.gotoFirstChild();
-    notEnd;
-    notEnd = cursor.gotoNextSibling()) {
-
-    lastComment = handleComment(cursor, lastComment);
-
-    if(cursor.nodeType == 'import_declaration'){
-      var func_text = cursor.nodeText;
-      func_text = func_text.replace('import', '');
-      func_text = func_text.replace(';', '');
-
-      reportText = reportText + "\n\n" + hl + " " + func_text +
-      "\n" + lastComment;
-
-      lastComment = "";
-    }
-
-    if(cursor.nodeType == 'struct_declaration'){
-
-      reportText += handleStructDeclaration(cursor.currentNode.walk());
-
-      lastComment = "";
-    }
-}
+var reportText = handleScriptHeader(cursor);
 
 console.log(reportText);
