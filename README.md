@@ -4,6 +4,11 @@ From ashes to documentation, turn AGS Script Header files into friendly text.
 
 Supports Markdown and BBCode (AGS Forum Markup!).
 
+## Build
+
+after you git clone this repo, just type `npm link` on the folder. This should
+add an `ash2doc` command to your path. Type `npm unlink` to remove it.
+
 ## Usage
 
 ```
