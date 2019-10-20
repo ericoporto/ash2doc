@@ -2,7 +2,13 @@
 
 From ashes to documentation, turn AGS Script Header files into friendly text.
 
-Supports Markdown and BBCode (AGS Forum Markup!).
+Supports Markdown and BBCode (AGS Forum Markup! Not ready yet, but planned).
+
+## Install
+
+Just install directly from npm:
+
+`npm install -g ash2doc`
 
 ## Build
 
