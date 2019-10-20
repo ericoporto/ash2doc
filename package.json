@@ -1,6 +1,6 @@
 {
 	"name": "ash2doc",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "parse comments in an AGS Script Header file and turn into docs",
 	"main": "src/index.js",
 	"bin": {
