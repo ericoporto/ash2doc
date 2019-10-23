@@ -61,6 +61,51 @@ exports.handleMethodDeclaration = function(cur, hl, structName , lastComment){
 }
 var handleMethodDeclaration = exports.handleMethodDeclaration;
 
+exports.handlePropertyDeclaration = function(cur, hl, structName , lastComment){
+  var prop_text = "";
+  var reportText = ""
+
+  for(var notEnd = cur.gotoFirstChild();
+      notEnd;
+      notEnd = cur.gotoNextSibling()) {
+
+      if(cur.nodeType == 'field_access_specifier') {
+         if(cur.nodeText != 'import'){
+           prop_text = prop_text + cur.nodeText + " ";
+         }
+      }
+
+      if(cur.nodeType == 'type_identifier') {
+         prop_text = prop_text + cur.nodeText + " ";
+      }
+
+      if(cur.nodeType == 'primitive_type') {
+         prop_text = prop_text + cur.nodeText + " ";
+      }
+
+      if(cur.nodeType == 'field_identifier') {
+        var txt = cur.nodeText;
+        var asterisk = "";
+
+        if(txt.startsWith('* ')){
+          const strlen = txt.length;
+          txt = txt.substr(2,strlen-2);
+          asterisk = "* ";
+        }
+
+        prop_text = prop_text + asterisk +
+          structName + "." + txt + " ";
+      }
+
+  }
+
+  reportText = reportText + "\n\n" + hl + "# " +
+   prop_text +
+  "\n" + lastComment;
+  return reportText;
+}
+var handlePropertyDeclaration = exports.handlePropertyDeclaration;
+
 // fields can be methods and properties
 exports.handleFieldDeclarationList = function(cur, hl, structName){
   var reportText = "";
@@ -71,6 +116,18 @@ exports.handleFieldDeclarationList = function(cur, hl, structName){
       notEnd = cur.gotoNextSibling()) {
 
       lastComment = handleComment(cur, hl, lastComment);
+
+
+      if(cur.nodeType == 'field_declaration'){
+
+        reportText += handlePropertyDeclaration(cur.currentNode.walk(),
+                                hl,
+                                structName,
+                                lastComment);
+
+        lastComment = "";
+
+      }
 
       if(cur.nodeType == 'field_function_declaration'){
 
@@ -152,6 +209,9 @@ var handleScriptHeader = exports.handleScriptHeader;
 // parse a sring as ash AGS Script Header file
 exports.parseStringAsASH = function(ashstring, hl, parser){
   const cursor = parser.parse(ashstring).walk();
+
+//  console.log(parser.parse(ashstring).rootNode.toString());
+// process.exit()
 
   return reportText = handleScriptHeader(cursor, hl);
 }
